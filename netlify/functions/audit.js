@@ -10,7 +10,7 @@ exports.handler = async (event) => {
   let targetUrl;
   try {
     const body = JSON.parse(event.body || '{}');
-    targetUrl = body.url;
+    targetUrl = body.url ? body.url.trim() : '';
     if (!targetUrl) throw new Error('URL is required');
   } catch (err) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Invalid URL payload' }) };
@@ -18,15 +18,32 @@ exports.handler = async (event) => {
 
   try {
     const startTime = Date.now();
-    const res = await axios.get(targetUrl, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
-      },
-      timeout: 12000
-    });
+    let html = '';
 
-    const html = res.data;
+    // Primary direct fetch simulating standard Googlebot
+    try {
+      const directRes = await axios.get(targetUrl, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+          'Accept-Language': 'en-US,en;q=0.9',
+          'Cache-Control': 'no-cache'
+        },
+        maxRedirects: 5,
+        timeout: 10000
+      });
+      html = directRes.data;
+    } catch (directErr) {
+      // Fallback gateway: bypasses Cloudflare/host firewall IP restrictions
+      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
+      const proxyRes = await axios.get(proxyUrl, { timeout: 15000 });
+      html = proxyRes.data;
+    }
+
+    if (!html || typeof html !== 'string') {
+      throw new Error('Target server returned empty content.');
+    }
+
     const responseTime = Date.now() - startTime;
     const $ = cheerio.load(html);
     const domain = new URL(targetUrl).hostname;
@@ -40,7 +57,7 @@ exports.handler = async (event) => {
     }
 
     // 1. Static Text Volume & Density (35 pts)
-    const rawBodyText = $('body').text().replace(/\s+/g, ' ').trim();
+    const rawBodyText = $('article, main, .entry-content, body').first().text().replace(/\s+/g, ' ').trim();
     const wordCount = rawBodyText.split(' ').filter(w => w.length > 0).length;
     addCheck('Static Word Count', 'Content Value', wordCount >= 900, 15, 
       wordCount >= 900 ? `${wordCount} words detected (Threshold: ≥900)` : `Thin text detected: only ${wordCount} words found`);
@@ -60,11 +77,11 @@ exports.handler = async (event) => {
       try {
         const json = JSON.parse($(el).html());
         const type = json['@type'] || (json['@graph'] && json['@graph'].map(g => g['@type']).join(','));
-        if (type && /Article|TechArticle|ScholarlyArticle|WebPage/i.test(type)) hasSchema = true;
+        if (type && /Article|TechArticle|ScholarlyArticle|WebPage|BlogPosting/i.test(type)) hasSchema = true;
       } catch (_) {}
     });
     addCheck('JSON-LD Schema Markup', 'E-E-A-T Signals', hasSchema, 10, 
-      hasSchema ? 'Valid Article or TechArticle Schema found' : 'No Schema.org Article metadata detected');
+      hasSchema ? 'Valid Article or BlogPosting Schema found' : 'No Schema.org Article metadata detected');
 
     const author = $('meta[name="author"]').attr('content') \vert{}\vert{} $('[class*="author"], [id*="author"], [rel="author"]').text().trim();
     const hasAuthor = author.length > 2 && !/admin|editor|team/i.test(author);
@@ -95,7 +112,7 @@ exports.handler = async (event) => {
     });
 
     addCheck('Mandatory Policy Pages', 'Compliance', hasPrivacy && (hasContact || hasAbout), 10, 
-      `Privacy Policy: ${hasPrivacy ? 'Yes' : 'No'} | About/Contact: ${hasContact || hasAbout ? 'Yes' : 'No'}`);
+      `Privacy: ${hasPrivacy ? 'Yes' : 'No'} | About/Contact: ${hasContact || hasAbout ? 'Yes' : 'No'}`);
 
     addCheck('Internal Crawl Paths', 'Compliance', internalLinks >= 3, 10, 
       `${internalLinks} internal link(s) discovered for crawler discovery`);
@@ -116,7 +133,8 @@ exports.handler = async (event) => {
   } catch (err) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: `Crawl Failed: ${err.message}` })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ error: `Crawl error: ${err.message}` })
     };
   }
 };
