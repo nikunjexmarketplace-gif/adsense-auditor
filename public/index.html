@@ -39,7 +39,7 @@
     }
     .brand { display: flex; align-items: center; gap: 10px; font-family: 'Google Sans', sans-serif; font-size: 1.2rem; font-weight: 500; }
     .badge { background: var(--adsense-light-blue); color: var(--adsense-blue); padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 500; }
-    main { max-width: 900px; margin: 30px auto; padding: 0 16px; }
+    main { max-width: 920px; margin: 30px auto; padding: 0 16px; }
     
     .tab-container {
       display: flex;
@@ -74,8 +74,8 @@
     button.submit-btn:hover { background: var(--adsense-blue-hover); }
     button:disabled { opacity: 0.6; cursor: not-allowed; }
 
-    #loader { display: none; text-align: center; padding: 30px; color: var(--text-secondary); font-size: 0.95rem; }
-    .progress-bar-container { width: 100%; height: 8px; background: #eee; border-radius: 4px; overflow: hidden; margin-top: 12px; display: none; }
+    #loader { display: none; text-align: center; padding: 25px; color: var(--text-secondary); font-size: 0.95rem; }
+    .progress-bar-container { width: 100%; height: 8px; background: #eee; border-radius: 4px; overflow: hidden; margin-top: 14px; display: none; }
     .progress-bar { height: 100%; width: 0%; background: var(--adsense-blue); transition: width 0.3s; }
 
     #singleResults, #domainResults { display: none; }
@@ -86,7 +86,6 @@
     .pass { background: var(--google-green-light); color: var(--google-green); }
     .fail { background: var(--google-red-light); color: var(--google-red); }
 
-    /* Domain Table */
     table.domain-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9rem; }
     table.domain-table th { background: var(--bg-page); text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border-color); font-weight: 500; color: var(--text-secondary); }
     table.domain-table td { padding: 12px; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
@@ -99,22 +98,20 @@
       <svg width="24" height="24" viewBox="0 0 192 192"><path fill="#4285F4" d="M152 40H40c-6.6 0-12 5.4-12 12v88c0 6.6 5.4 12 12 12h112c6.6 0 12-5.4 12-12V52c0-6.6-5.4-12-12-12z"/><path fill="#FBBC04" d="M120 70H60v16h60V70z"/><path fill="#34A853" d="M132 98H60v16h72V98z"/><path fill="#EA4335" d="M100 126H60v16h40v-16z"/></svg>
       Google AdSense Quality Console
     </div>
-    <span class="badge">Dual Mode v4.0</span>
+    <span class="badge">Universal Mode v4.5</span>
   </header>
 
   <main>
     <div style="text-align:center; margin-bottom:24px;">
       <h1 style="font-family:'Google Sans'; margin:0 0 8px 0; font-size:1.8rem;">AdSense Eligibility Auditor</h1>
-      <p style="color:var(--text-secondary); margin:0;">Inspect individual pages or audit complete domains via sitemap crawling.</p>
+      <p style="color:var(--text-secondary); margin:0;">Audit single pages or review your entire site's published articles.</p>
     </div>
 
-    <!-- Mode Select Tabs -->
     <div class="tab-container">
       <button class="tab-btn active" id="singleTabBtn" onclick="switchMode('single')">Single Page Audit</button>
-      <button class="tab-btn" id="domainTabBtn" onclick="switchMode('domain')">Entire Domain Audit (Sitemap)</button>
+      <button class="tab-btn" id="domainTabBtn" onclick="switchMode('domain')">Entire Domain Audit</button>
     </div>
 
-    <!-- Input Form -->
     <div class="card">
       <div class="input-group">
         <input type="url" id="targetInput" placeholder="https://hereistheanswers.com/article-slug/" required />
@@ -125,9 +122,9 @@
       </div>
     </div>
 
-    <div id="loader">Running simulation...</div>
+    <div id="loader">Running crawler simulation...</div>
 
-    <!-- 1. Single Page Results Card -->
+    <!-- Single Result -->
     <div id="singleResults" class="card">
       <div class="score-header">
         <div class="score-num" id="scoreCircle">0%</div>
@@ -139,7 +136,7 @@
       <div id="checks"></div>
     </div>
 
-    <!-- 2. Domain Level Results Card -->
+    <!-- Domain Result -->
     <div id="domainResults" class="card">
       <div class="score-header">
         <div class="score-num" id="domainScoreCircle">0%</div>
@@ -153,7 +150,7 @@
         <table class="domain-table">
           <thead>
             <tr>
-              <th>Audited URL</th>
+              <th>Audited Post URL</th>
               <th>Words</th>
               <th>Density</th>
               <th>Schema</th>
@@ -187,7 +184,7 @@
         input.placeholder = 'https://hereistheanswers.com/article-slug/';
         btn.innerText = 'Inspect URL';
       } else {
-        input.placeholder = 'https://hereistheanswers.com';
+        input.placeholder = 'https://hereistheanswers.com (or paste direct sitemap URL)';
         btn.innerText = 'Audit Entire Domain';
       }
     }
@@ -221,7 +218,6 @@
         checks.push({ name, pass, points: pass ? points : 0, maxPoints: points, message });
       }
 
-      // Word count & text density
       const bodyClone = doc.body ? doc.body.cloneNode(true) : doc.createElement('div');
       bodyClone.querySelectorAll('script, style, noscript, nav, footer, header').forEach(el => el.remove());
       const cleanText = (bodyClone.innerText || bodyClone.textContent || '').replace(/\s+/g, ' ').trim();
@@ -288,7 +284,6 @@
       }
     }
 
-    // 1. SINGLE AUDIT EXECUTION
     async function runSingleAudit(url) {
       document.getElementById('loader').style.display = 'block';
       document.getElementById('loader').innerText = 'Auditing single URL...';
@@ -340,70 +335,107 @@
       }
     }
 
-    // 2. DOMAIN SITEMAP AUDIT EXECUTION
-    async function runDomainAudit(rootUrl) {
-      const domainClean = rootUrl.replace(/\/$/, '');
-      const sitemapCandidates = [
-        `${domainClean}/sitemap.xml`,
-        `${domainClean}/wp-sitemap.xml`,
-        `${domainClean}/post-sitemap.xml`
-      ];
-
+    async function runDomainAudit(inputUrl) {
       const loader = document.getElementById('loader');
       const progContainer = document.getElementById('progContainer');
       const progBar = document.getElementById('progBar');
       const runBtn = document.getElementById('runBtn');
 
       loader.style.display = 'block';
-      loader.innerText = 'Locating and reading sitemap.xml...';
+      loader.innerText = 'Searching for sitemap and published articles...';
       progContainer.style.display = 'block';
-      progBar.style.width = '5%';
+      progBar.style.width = '10%';
       runBtn.disabled = true;
       document.getElementById('domainResults').style.display = 'none';
 
-      let sitemapXml = '';
-      for (const smUrl of sitemapCandidates) {
+      const cleanRoot = inputUrl.replace(/\/$/, '');
+      let discoveredUrls = [];
+
+      // If user provided a direct sitemap link
+      if (cleanRoot.endsWith('.xml')) {
         try {
-          const candidate = await fetchViaProxy(smUrl);
-          if (candidate && candidate.includes('<urlset') || candidate.includes('<sitemapindex')) {
-            sitemapXml = candidate;
-            break;
-          }
+          const xml = await fetchViaProxy(cleanRoot);
+          discoveredUrls = parseLocUrls(xml, cleanRoot);
         } catch (_) {}
       }
 
-      if (!sitemapXml) {
-        loader.style.display = 'none';
-        progContainer.style.display = 'none';
-        runBtn.disabled = false;
-        return alert('Could not find sitemap.xml or wp-sitemap.xml at domain root.');
-      }
+      // If not, check all standard WordPress sitemap variations
+      if (discoveredUrls.length === 0) {
+        const paths = [
+          `${cleanRoot}/sitemap_index.xml`,
+          `${cleanRoot}/sitemap.xml`,
+          `${cleanRoot}/wp-sitemap.xml`,
+          `${cleanRoot}/post-sitemap.xml`,
+          `${cleanRoot}/wp-sitemap-posts-post.1.xml`
+        ];
 
-      if (sitemapXml.includes('<sitemapindex')) {
-        const subMatch = sitemapXml.match(/<loc>(.*?post-sitemap\.xml.*?)<\/loc>/i) || sitemapXml.match(/<loc>(.*?sitemap.*?\.xml)<\/loc>/i);
-        if (subMatch && subMatch[1]) {
+        for (const p of paths) {
           try {
-            sitemapXml = await fetchViaProxy(subMatch[1]);
+            const res = await fetchViaProxy(p);
+            if (res && (res.includes('<urlset') || res.includes('<sitemapindex') || res.includes('<loc>'))) {
+              // If it's a sitemap index, try to fetch the first sub-sitemap
+              if (res.includes('<sitemapindex')) {
+                const subMatch = res.match(/<loc>(.*?post.*?\.xml)<\/loc>/i) || res.match(/<loc>(.*?sitemap.*?\.xml)<\/loc>/i);
+                if (subMatch && subMatch[1]) {
+                  const subXml = await fetchViaProxy(subMatch[1]);
+                  discoveredUrls = parseLocUrls(subXml, cleanRoot);
+                  if (discoveredUrls.length > 0) break;
+                }
+              }
+              discoveredUrls = parseLocUrls(res, cleanRoot);
+              if (discoveredUrls.length > 0) break;
+            }
           } catch (_) {}
         }
       }
 
-      const urls = [];
-      const regex = /<loc>(https?:\/\/[^<]+)<\/loc>/g;
-      let match;
-      while ((match = regex.exec(sitemapXml)) !== null) {
-        const u = match[1].trim();
-        if (!u.endsWith('.xml') && !u.match(/\/(category|tag|author|page)\//) && u !== domainClean && u !== domainClean + '/') {
-          urls.push(u);
-        }
+      // Fallback: If sitemaps are blocked/missing, crawl the homepage to extract article links
+      if (discoveredUrls.length === 0) {
+        loader.innerText = 'Sitemap not exposed; reading articles from homepage...';
+        try {
+          const homeHtml = await fetchViaProxy(cleanRoot);
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(homeHtml, 'text/html');
+          const domainHost = new URL(cleanRoot).hostname;
+
+          doc.querySelectorAll('a').forEach(a => {
+            const href = a.getAttribute('href') || '';
+            if (href.startsWith('/') || href.includes(domainHost)) {
+              let full = href.startsWith('/') ? `${cleanRoot}${href}` : href;
+              full = full.split('#')[0].split('?')[0];
+              if (
+                full !== cleanRoot &&
+                full !== `${cleanRoot}/` &&
+                !full.match(/\/(category|tag|author|page|contact|privacy|about)\//i) &&
+                !full.endsWith('.png') && !full.endsWith('.jpg') &&
+                !discoveredUrls.includes(full)
+              ) {
+                discoveredUrls.push(full);
+              }
+            }
+          });
+        } catch (_) {}
       }
 
-      const auditQueue = urls.slice(0, 12);
+      function parseLocUrls(xmlStr, base) {
+        const out = [];
+        const matches = xmlStr.matchAll(/<loc>(https?:\/\/[^<]+)<\/loc>/g);
+        for (const m of matches) {
+          const u = m[1].trim();
+          if (!u.endsWith('.xml') && !u.match(/\/(category|tag|author|page)\//) && u !== base && u !== base + '/') {
+            out.push(u);
+          }
+        }
+        return [...new Set(out)];
+      }
+
+      // Select up to 10 articles for audit
+      const auditQueue = discoveredUrls.slice(0, 10);
       if (auditQueue.length === 0) {
         loader.style.display = 'none';
         progContainer.style.display = 'none';
         runBtn.disabled = false;
-        return alert('No post URLs found in the sitemap.');
+        return alert('Could not find published articles. You can also paste your exact sitemap URL (e.g. https://yourdomain.com/sitemap_index.xml) into the box.');
       }
 
       const tableBody = document.getElementById('domainTableBody');
@@ -412,7 +444,9 @@
       let completed = 0;
 
       for (const postUrl of auditQueue) {
-        loader.innerText = `Crawling and scoring (${completed + 1}/${auditQueue.length}): ${postUrl.split('/').filter(Boolean).pop()}...`;
+        const slug = postUrl.split('/').filter(Boolean).pop() || postUrl;
+        loader.innerText = `Crawling (${completed + 1}/${auditQueue.length}): ${slug.slice(0, 30)}...`;
+        
         try {
           const html = await fetchViaProxy(postUrl);
           const res = evaluateHtml(html, postUrl);
@@ -432,7 +466,7 @@
           const tr = document.createElement('tr');
           tr.innerHTML = `
             <td><span class="truncate" style="color:#666;">${postUrl}</span></td>
-            <td colspan="4" style="color:var(--google-red);">Failed to crawl</td>
+            <td colspan="4" style="color:var(--google-red);">Fetch blocked</td>
             <td><span class="pill fail">ERROR</span></td>
           `;
           tableBody.appendChild(tr);
@@ -451,7 +485,7 @@
       const circle = document.getElementById('domainScoreCircle');
       const verdict = document.getElementById('domainVerdict');
       circle.innerText = avgScore + '%';
-      document.getElementById('domainMeta').innerText = `Batch Size: ${auditQueue.length} articles analyzed across ${domainClean}`;
+      document.getElementById('domainMeta').innerText = `Batch Size: ${auditQueue.length} articles analyzed across ${cleanRoot}`;
 
       if (avgScore >= 80) {
         circle.style.background = 'var(--google-green-light)';
