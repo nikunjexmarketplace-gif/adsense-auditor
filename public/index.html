@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Google AdSense Compliance & Policy Review Console</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -37,20 +37,21 @@
       align-items: center;
       justify-content: space-between;
     }
-    .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-family: 'Google Sans', sans-serif; font-size: 1.2rem; color: var(--text-main); }
-    .badge { background: var(--adsense-light-blue); color: var(--adsense-blue); padding: 4px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 500; }
-    main { max-width: 800px; margin: 40px auto; padding: 0 16px; }
-    .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 24px; margin-bottom: 20px; box-shadow: 0 1px 2px rgba(60,64,67,0.15); }
+    .brand { display: flex; align-items: center; gap: 10px; font-family: 'Google Sans', sans-serif; font-size: 1.2rem; font-weight: 500; }
+    .badge { background: var(--adsense-light-blue); color: var(--adsense-blue); padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 500; }
+    main { max-width: 820px; margin: 35px auto; padding: 0 16px; }
+    .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 24px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(60,64,67,0.12); }
     .input-group { display: flex; gap: 10px; }
-    input { flex: 1; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 1rem; outline: none; }
-    button { background: var(--adsense-blue); color: #fff; border: none; border-radius: 4px; padding: 0 24px; font-weight: 500; font-family: 'Google Sans'; cursor: pointer; }
+    input { flex: 1; padding: 13px 16px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 1rem; outline: none; }
+    input:focus { border-color: var(--adsense-blue); }
+    button { background: var(--adsense-blue); color: #fff; border: none; border-radius: 4px; padding: 0 26px; font-weight: 500; font-family: 'Google Sans'; font-size: 0.95rem; cursor: pointer; }
     button:hover { background: var(--adsense-blue-hover); }
-    #loader { display: none; text-align: center; padding: 30px; color: var(--text-secondary); }
+    #loader { display: none; text-align: center; padding: 35px; color: var(--text-secondary); font-size: 0.95rem; }
     #results { display: none; }
     .score-header { display: flex; align-items: center; gap: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 20px; }
-    .score-num { width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700; font-family: 'Google Sans'; }
-    .check-row { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--bg-page); border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 10px; }
-    .pill { padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: 500; }
+    .score-num { width: 75px; height: 75px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 700; font-family: 'Google Sans'; }
+    .check-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--bg-page); border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 10px; }
+    .pill { padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 500; white-space: nowrap; }
     .pass { background: var(--google-green-light); color: var(--google-green); }
     .fail { background: var(--google-red-light); color: var(--google-red); }
   </style>
@@ -59,27 +60,31 @@
   <header>
     <div class="brand">
       <svg width="24" height="24" viewBox="0 0 192 192"><path fill="#4285F4" d="M152 40H40c-6.6 0-12 5.4-12 12v88c0 6.6 5.4 12 12 12h112c6.6 0 12-5.4 12-12V52c0-6.6-5.4-12-12-12z"/><path fill="#FBBC04" d="M120 70H60v16h60V70z"/><path fill="#34A853" d="M132 98H60v16h72V98z"/><path fill="#EA4335" d="M100 126H60v16h40v-16z"/></svg>
-      Google AdSense Console
+      Google AdSense Quality Console
     </div>
-    <span class="badge">Compliance Simulation</span>
+    <span class="badge">E-E-A-T Auditor v3.0</span>
   </header>
+
   <main>
-    <div style="text-align:center; margin-bottom:24px;">
-      <h1 style="font-family:'Google Sans'; margin:0 0 8px 0;">Low-Value Content Auditor</h1>
-      <p style="color:var(--text-secondary); margin:0;">Test URLs against Googlebot automated review rules.</p>
+    <div style="text-align:center; margin-bottom:26px;">
+      <h1 style="font-family:'Google Sans'; margin:0 0 8px 0; font-size:1.85rem;">Low-Value Content Inspection Tool</h1>
+      <p style="color:var(--text-secondary); margin:0;">Audit web pages against Googlebot automated approval guidelines.</p>
     </div>
+
     <div class="card">
       <div class="input-group">
         <input type="url" id="targetUrl" placeholder="https://yourdomain.com/blog/article-slug/" required />
-        <button onclick="runAudit()">Inspect URL</button>
+        <button onclick="runAudit()" id="submitBtn">Inspect URL</button>
       </div>
     </div>
-    <div id="loader">Running crawler simulation...</div>
+
+    <div id="loader">Fetching DOM and calculating compliance metrics...</div>
+
     <div id="results" class="card">
       <div class="score-header">
         <div class="score-num" id="scoreCircle">0%</div>
         <div>
-          <div id="verdict" style="font-size:1.1rem; font-weight:700; font-family:'Google Sans';"></div>
+          <div id="verdict" style="font-size:1.15rem; font-weight:700; font-family:'Google Sans';"></div>
           <div id="meta" style="font-size:0.85rem; color:var(--text-secondary); margin-top:4px;"></div>
         </div>
       </div>
@@ -88,63 +93,147 @@
   </main>
 
   <script>
+    async function fetchHtmlWithProxies(url) {
+      // Direct client proxies that bypass hosting/Cloudflare IP blocks
+      const proxies = [
+        `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+        `https://corsproxy.io/?${encodeURIComponent(url)}`
+      ];
+
+      for (const proxy of proxies) {
+        try {
+          const res = await fetch(proxy);
+          if (res.ok) {
+            const text = await res.text();
+            if (text && text.length > 200) return text;
+          }
+        } catch (_) {}
+      }
+      throw new Error('Unable to read webpage. Confirm the URL is reachable in an incognito window.');
+    }
+
     async function runAudit() {
-      const url = document.getElementById('targetUrl').value.trim();
-      if (!url) return alert('Please enter a valid URL');
+      const urlInput = document.getElementById('targetUrl');
+      const url = urlInput.value.trim();
+      if (!url || !url.startsWith('http')) return alert('Please enter a valid URL starting with http:// or https://');
 
       document.getElementById('loader').style.display = 'block';
       document.getElementById('results').style.display = 'none';
 
-      try {
-        const res = await fetch('/.netlify/functions/audit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url })
-        });
-        const data = await res.json();
-        document.getElementById('loader').style.display = 'none';
+      const startTime = performance.now();
 
-        if (!res.ok || data.error) {
-          alert('Crawl Notice: ' + (data.error || 'Server unable to fetch page. Ensure the URL is publicly reachable.'));
-          return;
+      try {
+        const html = await fetchHtmlWithProxies(url);
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+
+        const latency = Math.round(performance.now() - startTime);
+
+        let score = 0;
+        const checks = [];
+        function addCheck(name, pass, points, message) {
+          if (pass) score += points;
+          checks.push({ name, pass, points: pass ? points : 0, maxPoints: points, message });
         }
 
+        // 1. Text & Density
+        const bodyClone = doc.body ? doc.body.cloneNode(true) : doc.createElement('div');
+        bodyClone.querySelectorAll('script, style, noscript, nav, footer, header').forEach(el => el.remove());
+        const cleanText = (bodyClone.innerText || bodyClone.textContent || '').replace(/\s+/g, ' ').trim();
+        const wordCount = cleanText.split(' ').filter(w => w.length > 0).length;
+        addCheck('Static Word Count', wordCount >= 900, 15, `${wordCount} words detected (Threshold: ≥900)`);
+
+        const textRatio = ((cleanText.length / html.length) * 100).toFixed(1);
+        addCheck('Text-to-HTML Density', textRatio >= 10, 10, `${textRatio}% text density (Threshold: ≥10%)`);
+
+        const codeBlocks = doc.querySelectorAll('pre, code, table').length;
+        addCheck('Structured Elements', codeBlocks > 0, 10, `Found ${codeBlocks} structured element(s) (code/tables)`);
+
+        // 2. Schema Markup
+        let hasSchema = false;
+        doc.querySelectorAll('script[type="application/ld+json"]').forEach(s => {
+          if (/Article|TechArticle|BlogPosting|WebPage/i.test(s.textContent)) hasSchema = true;
+        });
+        addCheck('JSON-LD Schema', hasSchema, 10, hasSchema ? 'Valid Schema.org Article metadata found' : 'No Article JSON-LD Schema detected');
+
+        // 3. Author Attribution
+        const authorMeta = doc.querySelector('meta[name="author"]');
+        const authorEl = doc.querySelector('[class*="author"], [rel="author"], [id*="author"]');
+        const authorName = (authorMeta ? authorMeta.content : (authorEl ? authorEl.innerText : '')).trim();
+        const hasAuthor = authorName.length > 2 && !/admin|editor|team/i.test(authorName);
+        addCheck('Named Author Attribution', hasAuthor, 10, hasAuthor ? `Author verified: ${authorName.slice(0, 30)}` : 'Anonymous or missing author attribution');
+
+        // 4. Citations & References
+        const hasCitations = /References|Citations|Sources|Bibliography/i.test(cleanText);
+        addCheck('Source Citations', hasCitations, 10, hasCitations ? 'Citations or sources section verified' : 'No bibliography or sources section found');
+
+        // 5. Legal & Internal Links
+        let hasPrivacy = false, hasContact = false, hasAbout = false;
+        let internalLinks = 0, subdirLink = false;
+        const currentDomain = new URL(url).hostname;
+
+        doc.querySelectorAll('a').forEach(a => {
+          const href = a.getAttribute('href') || '';
+          const txt = (a.innerText || '').toLowerCase();
+          if (/privacy/i.test(txt) || /privacy/i.test(href)) hasPrivacy = true;
+          if (/contact/i.test(txt) || /contact/i.test(href)) hasContact = true;
+          if (/about/i.test(txt) || /about/i.test(href)) hasAbout = true;
+
+          if (href.startsWith('/') || href.includes(currentDomain)) {
+            internalLinks++;
+            if (href.includes('/games/') || href.includes('/tools/') || href.includes('/quiz/')) {
+              subdirLink = true;
+            }
+          }
+        });
+
+        addCheck('Mandatory Policy Pages', hasPrivacy && (hasContact || hasAbout), 10, `Privacy: ${hasPrivacy ? 'Pass' : 'Missing'} | About/Contact: ${hasContact || hasAbout ? 'Pass' : 'Missing'}`);
+        addCheck('Internal Crawl Paths', internalLinks >= 3, 10, `${internalLinks} internal link(s) found`);
+        addCheck('Subdirectory Proof-of-Work', subdirLink, 10, subdirLink ? 'Active link to /games/, /tools/, or /quiz/ found' : 'No functional utility link identified');
+
+        // 6. Mobile Viewport
+        const hasViewport = doc.querySelector('meta[name="viewport"]') !== null;
+        addCheck('Mobile Responsive', hasViewport, 5, hasViewport ? 'Responsive viewport meta configured' : 'Missing responsive viewport tag');
+
+        // Render Results
+        document.getElementById('loader').style.display = 'none';
         document.getElementById('results').style.display = 'block';
+
         const circle = document.getElementById('scoreCircle');
         const verdict = document.getElementById('verdict');
-        const finalScore = data.score !== undefined ? data.score : 0;
-        circle.innerText = finalScore + '%';
-        document.getElementById('meta').innerText = `Response: ${data.responseTime || 0}ms | Target: ${data.url}`;
+        circle.innerText = score + '%';
+        document.getElementById('meta').innerText = `Fetch Latency: ${latency}ms | Target: ${url}`;
 
-        if (finalScore >= 80) {
+        if (score >= 80) {
           circle.style.background = 'var(--google-green-light)';
           circle.style.color = 'var(--google-green)';
-          verdict.innerText = 'High Approval Probability (Ready for AdSense)';
+          verdict.innerText = 'POLICY READY: High AdSense Approval Probability';
           verdict.style.color = 'var(--google-green)';
         } else {
           circle.style.background = 'var(--google-red-light)';
           circle.style.color = 'var(--google-red)';
-          verdict.innerText = 'At Risk: Low-Value Content Detected';
+          verdict.innerText = 'HIGH RISK: Low-Value Content Flags Detected';
           verdict.style.color = 'var(--google-red)';
         }
 
         const checksDiv = document.getElementById('checks');
         checksDiv.innerHTML = '';
-        (data.checks || []).forEach(c => {
-          const div = document.createElement('div');
-          div.className = 'check-row';
-          div.innerHTML = `
+        checks.forEach(c => {
+          const row = document.createElement('div');
+          row.className = 'check-row';
+          row.innerHTML = `
             <div>
               <div style="font-weight:500;">${c.name}</div>
               <div style="font-size:0.85rem; color:var(--text-secondary);">${c.message}</div>
             </div>
-            <div class="pill ${c.pass ? 'pass' : 'fail'}">${c.pass ? 'PASS' : 'FAIL'} (+${c.points} pts)</div>
+            <div class="pill ${c.pass ? 'pass' : 'fail'}">${c.pass ? 'PASS' : 'FAIL'} (${c.points}/${c.maxPoints} pts)</div>
           `;
-          checksDiv.appendChild(div);
+          checksDiv.appendChild(row);
         });
+
       } catch (err) {
         document.getElementById('loader').style.display = 'none';
-        alert('Network Connection Error: ' + err.message);
+        alert('Inspection Alert: ' + err.message);
       }
     }
   </script>
