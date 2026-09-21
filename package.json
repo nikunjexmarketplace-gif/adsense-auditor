@@ -1,0 +1,10 @@
+{
+  "name": "adsense-auditor",
+  "version": "1.0.0",
+  "description": "Google AdSense Crawler & Low-Value Content Auditor",
+  "main": "netlify/functions/audit.js",
+  "dependencies": {
+    "axios": "^1.7.0",
+    "cheerio": "^1.0.0"
+  }
+}
