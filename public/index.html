@@ -1,61 +1,152 @@
-<script>
-      async function runAudit() {
-        const url = document.getElementById('targetUrl').value.trim();
-        if (!url) return alert('Please enter a valid URL');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google AdSense Compliance & Policy Review Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --adsense-blue: #1a73e8;
+      --adsense-blue-hover: #1557b0;
+      --adsense-light-blue: #e8f0fe;
+      --google-green: #1e8e3e;
+      --google-green-light: #e6f4ea;
+      --google-red: #d93025;
+      --google-red-light: #fce8e6;
+      --border-color: #dadce0;
+      --bg-page: #f8f9fa;
+      --card-bg: #ffffff;
+      --text-main: #202124;
+      --text-secondary: #5f6368;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+    }
+    header {
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border-color);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-family: 'Google Sans', sans-serif; font-size: 1.2rem; color: var(--text-main); }
+    .badge { background: var(--adsense-light-blue); color: var(--adsense-blue); padding: 4px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 500; }
+    main { max-width: 800px; margin: 40px auto; padding: 0 16px; }
+    .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 24px; margin-bottom: 20px; box-shadow: 0 1px 2px rgba(60,64,67,0.15); }
+    .input-group { display: flex; gap: 10px; }
+    input { flex: 1; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 1rem; outline: none; }
+    button { background: var(--adsense-blue); color: #fff; border: none; border-radius: 4px; padding: 0 24px; font-weight: 500; font-family: 'Google Sans'; cursor: pointer; }
+    button:hover { background: var(--adsense-blue-hover); }
+    #loader { display: none; text-align: center; padding: 30px; color: var(--text-secondary); }
+    #results { display: none; }
+    .score-header { display: flex; align-items: center; gap: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 20px; }
+    .score-num { width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700; font-family: 'Google Sans'; }
+    .check-row { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--bg-page); border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 10px; }
+    .pill { padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: 500; }
+    .pass { background: var(--google-green-light); color: var(--google-green); }
+    .fail { background: var(--google-red-light); color: var(--google-red); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <svg width="24" height="24" viewBox="0 0 192 192"><path fill="#4285F4" d="M152 40H40c-6.6 0-12 5.4-12 12v88c0 6.6 5.4 12 12 12h112c6.6 0 12-5.4 12-12V52c0-6.6-5.4-12-12-12z"/><path fill="#FBBC04" d="M120 70H60v16h60V70z"/><path fill="#34A853" d="M132 98H60v16h72V98z"/><path fill="#EA4335" d="M100 126H60v16h40v-16z"/></svg>
+      Google AdSense Console
+    </div>
+    <span class="badge">Compliance Simulation</span>
+  </header>
+  <main>
+    <div style="text-align:center; margin-bottom:24px;">
+      <h1 style="font-family:'Google Sans'; margin:0 0 8px 0;">Low-Value Content Auditor</h1>
+      <p style="color:var(--text-secondary); margin:0;">Test URLs against Googlebot automated review rules.</p>
+    </div>
+    <div class="card">
+      <div class="input-group">
+        <input type="url" id="targetUrl" placeholder="https://yourdomain.com/blog/article-slug/" required />
+        <button onclick="runAudit()">Inspect URL</button>
+      </div>
+    </div>
+    <div id="loader">Running crawler simulation...</div>
+    <div id="results" class="card">
+      <div class="score-header">
+        <div class="score-num" id="scoreCircle">0%</div>
+        <div>
+          <div id="verdict" style="font-size:1.1rem; font-weight:700; font-family:'Google Sans';"></div>
+          <div id="meta" style="font-size:0.85rem; color:var(--text-secondary); margin-top:4px;"></div>
+        </div>
+      </div>
+      <div id="checks"></div>
+    </div>
+  </main>
 
-        document.getElementById('loader').style.display = 'block';
-        document.getElementById('results').style.display = 'none';
+  <script>
+    async function runAudit() {
+      const url = document.getElementById('targetUrl').value.trim();
+      if (!url) return alert('Please enter a valid URL');
 
-        try {
-          const res = await fetch('/.netlify/functions/audit', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url })
-          });
-          const data = await res.json();
-          document.getElementById('loader').style.display = 'none';
+      document.getElementById('loader').style.display = 'block';
+      document.getElementById('results').style.display = 'none';
 
-          if (!res.ok || data.error) {
-            alert('Crawl Notice: ' + (data.error || 'Server unable to fetch page. Ensure the URL is publicly reachable and not blocking bots.'));
-            return;
-          }
+      try {
+        const res = await fetch('/.netlify/functions/audit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url })
+        });
+        const data = await res.json();
+        document.getElementById('loader').style.display = 'none';
 
-          document.getElementById('results').style.display = 'block';
-          const circle = document.getElementById('scoreCircle');
-          const verdict = document.getElementById('verdict');
-          const finalScore = data.score !== undefined ? data.score : 0;
-          circle.innerText = finalScore + '%';
-          document.getElementById('meta').innerText = `Response: ${data.responseTime || 0}ms | Target: ${data.url}`;
-
-          if (finalScore >= 80) {
-            circle.style.background = 'var(--google-green-light)';
-            circle.style.color = 'var(--google-green)';
-            verdict.innerText = 'High Approval Probability (Ready for AdSense)';
-            verdict.style.color = 'var(--google-green)';
-          } else {
-            circle.style.background = 'var(--google-red-light)';
-            circle.style.color = 'var(--google-red)';
-            verdict.innerText = 'At Risk: Low-Value Content Detected';
-            verdict.style.color = 'var(--google-red)';
-          }
-
-          const checksDiv = document.getElementById('checks');
-          checksDiv.innerHTML = '';
-          (data.checks || []).forEach(c => {
-            const div = document.createElement('div');
-            div.className = 'check-row';
-            div.innerHTML = `
-              <div>
-                <div style="font-weight:500;">${c.name}</div>
-                <div style="font-size:0.85rem; color:var(--text-secondary);">${c.message}</div>
-              </div>
-              <div class="pill ${c.pass ? 'pass' : 'fail'}">${c.pass ? 'PASS' : 'FAIL'} (+${c.points} pts)</div>
-            `;
-            checksDiv.appendChild(div);
-          });
-        } catch (err) {
-          document.getElementById('loader').style.display = 'none';
-          alert('Network Connection Error: ' + err.message);
+        if (!res.ok || data.error) {
+          alert('Crawl Notice: ' + (data.error || 'Server unable to fetch page. Ensure the URL is publicly reachable.'));
+          return;
         }
+
+        document.getElementById('results').style.display = 'block';
+        const circle = document.getElementById('scoreCircle');
+        const verdict = document.getElementById('verdict');
+        const finalScore = data.score !== undefined ? data.score : 0;
+        circle.innerText = finalScore + '%';
+        document.getElementById('meta').innerText = `Response: ${data.responseTime || 0}ms | Target: ${data.url}`;
+
+        if (finalScore >= 80) {
+          circle.style.background = 'var(--google-green-light)';
+          circle.style.color = 'var(--google-green)';
+          verdict.innerText = 'High Approval Probability (Ready for AdSense)';
+          verdict.style.color = 'var(--google-green)';
+        } else {
+          circle.style.background = 'var(--google-red-light)';
+          circle.style.color = 'var(--google-red)';
+          verdict.innerText = 'At Risk: Low-Value Content Detected';
+          verdict.style.color = 'var(--google-red)';
+        }
+
+        const checksDiv = document.getElementById('checks');
+        checksDiv.innerHTML = '';
+        (data.checks || []).forEach(c => {
+          const div = document.createElement('div');
+          div.className = 'check-row';
+          div.innerHTML = `
+            <div>
+              <div style="font-weight:500;">${c.name}</div>
+              <div style="font-size:0.85rem; color:var(--text-secondary);">${c.message}</div>
+            </div>
+            <div class="pill ${c.pass ? 'pass' : 'fail'}">${c.pass ? 'PASS' : 'FAIL'} (+${c.points} pts)</div>
+          `;
+          checksDiv.appendChild(div);
+        });
+      } catch (err) {
+        document.getElementById('loader').style.display = 'none';
+        alert('Network Connection Error: ' + err.message);
       }
-    </script>
+    }
+  </script>
+</body>
+</html>
