@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Google AdSense Compliance & Policy Review Console</title>
+  <title>Google AdSense Quality & Policy Review Console</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
@@ -39,21 +39,58 @@
     }
     .brand { display: flex; align-items: center; gap: 10px; font-family: 'Google Sans', sans-serif; font-size: 1.2rem; font-weight: 500; }
     .badge { background: var(--adsense-light-blue); color: var(--adsense-blue); padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 500; }
-    main { max-width: 820px; margin: 35px auto; padding: 0 16px; }
+    main { max-width: 900px; margin: 30px auto; padding: 0 16px; }
+    
+    .tab-container {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid var(--border-color);
+      background: var(--card-bg);
+      border-radius: 6px;
+      font-family: 'Google Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+    .tab-btn.active {
+      background: var(--adsense-light-blue);
+      color: var(--adsense-blue);
+      border-color: var(--adsense-blue);
+    }
+
     .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 24px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(60,64,67,0.12); }
     .input-group { display: flex; gap: 10px; }
     input { flex: 1; padding: 13px 16px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 1rem; outline: none; }
     input:focus { border-color: var(--adsense-blue); }
-    button { background: var(--adsense-blue); color: #fff; border: none; border-radius: 4px; padding: 0 26px; font-weight: 500; font-family: 'Google Sans'; font-size: 0.95rem; cursor: pointer; }
-    button:hover { background: var(--adsense-blue-hover); }
-    #loader { display: none; text-align: center; padding: 35px; color: var(--text-secondary); font-size: 0.95rem; }
-    #results { display: none; }
+    button.submit-btn { background: var(--adsense-blue); color: #fff; border: none; border-radius: 4px; padding: 0 26px; font-weight: 500; font-family: 'Google Sans'; font-size: 0.95rem; cursor: pointer; }
+    button.submit-btn:hover { background: var(--adsense-blue-hover); }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    #loader { display: none; text-align: center; padding: 30px; color: var(--text-secondary); font-size: 0.95rem; }
+    .progress-bar-container { width: 100%; height: 8px; background: #eee; border-radius: 4px; overflow: hidden; margin-top: 12px; display: none; }
+    .progress-bar { height: 100%; width: 0%; background: var(--adsense-blue); transition: width 0.3s; }
+
+    #singleResults, #domainResults { display: none; }
     .score-header { display: flex; align-items: center; gap: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 20px; }
     .score-num { width: 75px; height: 75px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 700; font-family: 'Google Sans'; }
     .check-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--bg-page); border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 10px; }
     .pill { padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 500; white-space: nowrap; }
     .pass { background: var(--google-green-light); color: var(--google-green); }
     .fail { background: var(--google-red-light); color: var(--google-red); }
+
+    /* Domain Table */
+    table.domain-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9rem; }
+    table.domain-table th { background: var(--bg-page); text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border-color); font-weight: 500; color: var(--text-secondary); }
+    table.domain-table td { padding: 12px; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+    .truncate { max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
   </style>
 </head>
 <body>
@@ -62,25 +99,36 @@
       <svg width="24" height="24" viewBox="0 0 192 192"><path fill="#4285F4" d="M152 40H40c-6.6 0-12 5.4-12 12v88c0 6.6 5.4 12 12 12h112c6.6 0 12-5.4 12-12V52c0-6.6-5.4-12-12-12z"/><path fill="#FBBC04" d="M120 70H60v16h60V70z"/><path fill="#34A853" d="M132 98H60v16h72V98z"/><path fill="#EA4335" d="M100 126H60v16h40v-16z"/></svg>
       Google AdSense Quality Console
     </div>
-    <span class="badge">E-E-A-T Auditor v3.0</span>
+    <span class="badge">Dual Mode v4.0</span>
   </header>
 
   <main>
-    <div style="text-align:center; margin-bottom:26px;">
-      <h1 style="font-family:'Google Sans'; margin:0 0 8px 0; font-size:1.85rem;">Low-Value Content Inspection Tool</h1>
-      <p style="color:var(--text-secondary); margin:0;">Audit web pages against Googlebot automated approval guidelines.</p>
+    <div style="text-align:center; margin-bottom:24px;">
+      <h1 style="font-family:'Google Sans'; margin:0 0 8px 0; font-size:1.8rem;">AdSense Eligibility Auditor</h1>
+      <p style="color:var(--text-secondary); margin:0;">Inspect individual pages or audit complete domains via sitemap crawling.</p>
     </div>
 
+    <!-- Mode Select Tabs -->
+    <div class="tab-container">
+      <button class="tab-btn active" id="singleTabBtn" onclick="switchMode('single')">Single Page Audit</button>
+      <button class="tab-btn" id="domainTabBtn" onclick="switchMode('domain')">Entire Domain Audit (Sitemap)</button>
+    </div>
+
+    <!-- Input Form -->
     <div class="card">
       <div class="input-group">
-        <input type="url" id="targetUrl" placeholder="https://yourdomain.com/blog/article-slug/" required />
-        <button onclick="runAudit()" id="submitBtn">Inspect URL</button>
+        <input type="url" id="targetInput" placeholder="https://hereistheanswers.com/article-slug/" required />
+        <button class="submit-btn" id="runBtn" onclick="handleStart()">Inspect URL</button>
+      </div>
+      <div class="progress-bar-container" id="progContainer">
+        <div class="progress-bar" id="progBar"></div>
       </div>
     </div>
 
-    <div id="loader">Fetching DOM and calculating compliance metrics...</div>
+    <div id="loader">Running simulation...</div>
 
-    <div id="results" class="card">
+    <!-- 1. Single Page Results Card -->
+    <div id="singleResults" class="card">
       <div class="score-header">
         <div class="score-num" id="scoreCircle">0%</div>
         <div>
@@ -90,121 +138,177 @@
       </div>
       <div id="checks"></div>
     </div>
+
+    <!-- 2. Domain Level Results Card -->
+    <div id="domainResults" class="card">
+      <div class="score-header">
+        <div class="score-num" id="domainScoreCircle">0%</div>
+        <div>
+          <div id="domainVerdict" style="font-size:1.15rem; font-weight:700; font-family:'Google Sans';"></div>
+          <div id="domainMeta" style="font-size:0.85rem; color:var(--text-secondary); margin-top:4px;"></div>
+        </div>
+      </div>
+      <h3 style="font-family:'Google Sans'; margin:20px 0 10px 0; font-size:1.05rem;">Discovered Article Audit Log</h3>
+      <div style="overflow-x: auto;">
+        <table class="domain-table">
+          <thead>
+            <tr>
+              <th>Audited URL</th>
+              <th>Words</th>
+              <th>Density</th>
+              <th>Schema</th>
+              <th>Score</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="domainTableBody"></tbody>
+        </table>
+      </div>
+    </div>
   </main>
 
   <script>
-    async function fetchHtmlWithProxies(url) {
-      // Direct client proxies that bypass hosting/Cloudflare IP blocks
+    let currentMode = 'single';
+
+    function switchMode(mode) {
+      currentMode = mode;
+      document.getElementById('singleTabBtn').classList.toggle('active', mode === 'single');
+      document.getElementById('domainTabBtn').classList.toggle('active', mode === 'domain');
+      
+      const input = document.getElementById('targetInput');
+      const btn = document.getElementById('runBtn');
+      
+      document.getElementById('singleResults').style.display = 'none';
+      document.getElementById('domainResults').style.display = 'none';
+      document.getElementById('loader').style.display = 'none';
+      document.getElementById('progContainer').style.display = 'none';
+
+      if (mode === 'single') {
+        input.placeholder = 'https://hereistheanswers.com/article-slug/';
+        btn.innerText = 'Inspect URL';
+      } else {
+        input.placeholder = 'https://hereistheanswers.com';
+        btn.innerText = 'Audit Entire Domain';
+      }
+    }
+
+    async function fetchViaProxy(url) {
       const proxies = [
         `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
         `https://corsproxy.io/?${encodeURIComponent(url)}`
       ];
-
       for (const proxy of proxies) {
         try {
           const res = await fetch(proxy);
           if (res.ok) {
             const text = await res.text();
-            if (text && text.length > 200) return text;
+            if (text && text.length > 50) return text;
           }
         } catch (_) {}
       }
-      throw new Error('Unable to read webpage. Confirm the URL is reachable in an incognito window.');
+      throw new Error('Connection failed via proxy gateway.');
     }
 
-    async function runAudit() {
-      const urlInput = document.getElementById('targetUrl');
-      const url = urlInput.value.trim();
-      if (!url || !url.startsWith('http')) return alert('Please enter a valid URL starting with http:// or https://');
+    function evaluateHtml(html, url) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const currentDomain = new URL(url).hostname;
 
+      let score = 0;
+      const checks = [];
+      function addCheck(name, pass, points, message) {
+        if (pass) score += points;
+        checks.push({ name, pass, points: pass ? points : 0, maxPoints: points, message });
+      }
+
+      // Word count & text density
+      const bodyClone = doc.body ? doc.body.cloneNode(true) : doc.createElement('div');
+      bodyClone.querySelectorAll('script, style, noscript, nav, footer, header').forEach(el => el.remove());
+      const cleanText = (bodyClone.innerText || bodyClone.textContent || '').replace(/\s+/g, ' ').trim();
+      const wordCount = cleanText.split(' ').filter(w => w.length > 0).length;
+      addCheck('Static Word Count', wordCount >= 900, 15, `${wordCount} words detected (Threshold: ≥900)`);
+
+      const textRatio = Number(((cleanText.length / Math.max(html.length, 1)) * 100).toFixed(1));
+      addCheck('Text-to-HTML Density', textRatio >= 10, 10, `${textRatio}% text density (Threshold: ≥10%)`);
+
+      const codeBlocks = doc.querySelectorAll('pre, code, table').length;
+      addCheck('Structured Elements', codeBlocks > 0, 10, `Found ${codeBlocks} structured element(s) (tables/code)`);
+
+      let hasSchema = false;
+      doc.querySelectorAll('script[type="application/ld+json"]').forEach(s => {
+        if (/Article|TechArticle|BlogPosting|WebPage/i.test(s.textContent)) hasSchema = true;
+      });
+      addCheck('JSON-LD Schema', hasSchema, 10, hasSchema ? 'Valid Article Schema found' : 'No Schema detected');
+
+      const authorMeta = doc.querySelector('meta[name="author"]');
+      const authorEl = doc.querySelector('[class*="author"], [rel="author"], [id*="author"]');
+      const authorName = (authorMeta ? authorMeta.content : (authorEl ? authorEl.innerText : '')).trim();
+      const hasAuthor = authorName.length > 2 && !/admin|editor|team/i.test(authorName);
+      addCheck('Named Author Attribution', hasAuthor, 10, hasAuthor ? `Verified: ${authorName.slice(0, 25)}` : 'Anonymous or missing');
+
+      const hasCitations = /References|Citations|Sources|Bibliography/i.test(cleanText);
+      addCheck('Source Citations', hasCitations, 10, hasCitations ? 'Citations identified' : 'Missing bibliography section');
+
+      let hasPrivacy = false, hasContact = false, hasAbout = false;
+      let internalLinks = 0, subdirLink = false;
+
+      doc.querySelectorAll('a').forEach(a => {
+        const href = a.getAttribute('href') || '';
+        const txt = (a.innerText || '').toLowerCase();
+        if (/privacy/i.test(txt) || /privacy/i.test(href)) hasPrivacy = true;
+        if (/contact/i.test(txt) || /contact/i.test(href)) hasContact = true;
+        if (/about/i.test(txt) || /about/i.test(href)) hasAbout = true;
+
+        if (href.startsWith('/') || href.includes(currentDomain)) {
+          internalLinks++;
+          if (href.includes('/games/') || href.includes('/tools/') || href.includes('/quiz/')) {
+            subdirLink = true;
+          }
+        }
+      });
+
+      addCheck('Mandatory Policy Pages', hasPrivacy && (hasContact || hasAbout), 10, `Privacy: ${hasPrivacy ? 'Pass' : 'No'} | About/Contact: ${hasContact || hasAbout ? 'Pass' : 'No'}`);
+      addCheck('Internal Crawl Paths', internalLinks >= 3, 10, `${internalLinks} internal link(s) found`);
+      addCheck('Subdirectory Proof-of-Work', subdirLink, 10, subdirLink ? 'Utility link detected' : 'No utility link identified');
+
+      const hasViewport = doc.querySelector('meta[name="viewport"]') !== null;
+      addCheck('Mobile Responsive', hasViewport, 5, hasViewport ? 'Responsive viewport configured' : 'Missing viewport');
+
+      return { score, wordCount, textRatio, hasSchema, checks };
+    }
+
+    async function handleStart() {
+      const val = document.getElementById('targetInput').value.trim();
+      if (!val || !val.startsWith('http')) return alert('Please enter a valid URL starting with http:// or https://');
+
+      if (currentMode === 'single') {
+        runSingleAudit(val);
+      } else {
+        runDomainAudit(val);
+      }
+    }
+
+    // 1. SINGLE AUDIT EXECUTION
+    async function runSingleAudit(url) {
       document.getElementById('loader').style.display = 'block';
-      document.getElementById('results').style.display = 'none';
+      document.getElementById('loader').innerText = 'Auditing single URL...';
+      document.getElementById('singleResults').style.display = 'none';
 
       const startTime = performance.now();
-
       try {
-        const html = await fetchHtmlWithProxies(url);
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-
+        const html = await fetchViaProxy(url);
         const latency = Math.round(performance.now() - startTime);
+        const res = evaluateHtml(html, url);
 
-        let score = 0;
-        const checks = [];
-        function addCheck(name, pass, points, message) {
-          if (pass) score += points;
-          checks.push({ name, pass, points: pass ? points : 0, maxPoints: points, message });
-        }
-
-        // 1. Text & Density
-        const bodyClone = doc.body ? doc.body.cloneNode(true) : doc.createElement('div');
-        bodyClone.querySelectorAll('script, style, noscript, nav, footer, header').forEach(el => el.remove());
-        const cleanText = (bodyClone.innerText || bodyClone.textContent || '').replace(/\s+/g, ' ').trim();
-        const wordCount = cleanText.split(' ').filter(w => w.length > 0).length;
-        addCheck('Static Word Count', wordCount >= 900, 15, `${wordCount} words detected (Threshold: ≥900)`);
-
-        const textRatio = ((cleanText.length / html.length) * 100).toFixed(1);
-        addCheck('Text-to-HTML Density', textRatio >= 10, 10, `${textRatio}% text density (Threshold: ≥10%)`);
-
-        const codeBlocks = doc.querySelectorAll('pre, code, table').length;
-        addCheck('Structured Elements', codeBlocks > 0, 10, `Found ${codeBlocks} structured element(s) (code/tables)`);
-
-        // 2. Schema Markup
-        let hasSchema = false;
-        doc.querySelectorAll('script[type="application/ld+json"]').forEach(s => {
-          if (/Article|TechArticle|BlogPosting|WebPage/i.test(s.textContent)) hasSchema = true;
-        });
-        addCheck('JSON-LD Schema', hasSchema, 10, hasSchema ? 'Valid Schema.org Article metadata found' : 'No Article JSON-LD Schema detected');
-
-        // 3. Author Attribution
-        const authorMeta = doc.querySelector('meta[name="author"]');
-        const authorEl = doc.querySelector('[class*="author"], [rel="author"], [id*="author"]');
-        const authorName = (authorMeta ? authorMeta.content : (authorEl ? authorEl.innerText : '')).trim();
-        const hasAuthor = authorName.length > 2 && !/admin|editor|team/i.test(authorName);
-        addCheck('Named Author Attribution', hasAuthor, 10, hasAuthor ? `Author verified: ${authorName.slice(0, 30)}` : 'Anonymous or missing author attribution');
-
-        // 4. Citations & References
-        const hasCitations = /References|Citations|Sources|Bibliography/i.test(cleanText);
-        addCheck('Source Citations', hasCitations, 10, hasCitations ? 'Citations or sources section verified' : 'No bibliography or sources section found');
-
-        // 5. Legal & Internal Links
-        let hasPrivacy = false, hasContact = false, hasAbout = false;
-        let internalLinks = 0, subdirLink = false;
-        const currentDomain = new URL(url).hostname;
-
-        doc.querySelectorAll('a').forEach(a => {
-          const href = a.getAttribute('href') || '';
-          const txt = (a.innerText || '').toLowerCase();
-          if (/privacy/i.test(txt) || /privacy/i.test(href)) hasPrivacy = true;
-          if (/contact/i.test(txt) || /contact/i.test(href)) hasContact = true;
-          if (/about/i.test(txt) || /about/i.test(href)) hasAbout = true;
-
-          if (href.startsWith('/') || href.includes(currentDomain)) {
-            internalLinks++;
-            if (href.includes('/games/') || href.includes('/tools/') || href.includes('/quiz/')) {
-              subdirLink = true;
-            }
-          }
-        });
-
-        addCheck('Mandatory Policy Pages', hasPrivacy && (hasContact || hasAbout), 10, `Privacy: ${hasPrivacy ? 'Pass' : 'Missing'} | About/Contact: ${hasContact || hasAbout ? 'Pass' : 'Missing'}`);
-        addCheck('Internal Crawl Paths', internalLinks >= 3, 10, `${internalLinks} internal link(s) found`);
-        addCheck('Subdirectory Proof-of-Work', subdirLink, 10, subdirLink ? 'Active link to /games/, /tools/, or /quiz/ found' : 'No functional utility link identified');
-
-        // 6. Mobile Viewport
-        const hasViewport = doc.querySelector('meta[name="viewport"]') !== null;
-        addCheck('Mobile Responsive', hasViewport, 5, hasViewport ? 'Responsive viewport meta configured' : 'Missing responsive viewport tag');
-
-        // Render Results
         document.getElementById('loader').style.display = 'none';
-        document.getElementById('results').style.display = 'block';
+        document.getElementById('singleResults').style.display = 'block';
 
         const circle = document.getElementById('scoreCircle');
         const verdict = document.getElementById('verdict');
-        circle.innerText = score + '%';
+        circle.innerText = res.score + '%';
         document.getElementById('meta').innerText = `Fetch Latency: ${latency}ms | Target: ${url}`;
 
-        if (score >= 80) {
+        if (res.score >= 80) {
           circle.style.background = 'var(--google-green-light)';
           circle.style.color = 'var(--google-green)';
           verdict.innerText = 'POLICY READY: High AdSense Approval Probability';
@@ -218,7 +322,7 @@
 
         const checksDiv = document.getElementById('checks');
         checksDiv.innerHTML = '';
-        checks.forEach(c => {
+        res.checks.forEach(c => {
           const row = document.createElement('div');
           row.className = 'check-row';
           row.innerHTML = `
@@ -230,10 +334,135 @@
           `;
           checksDiv.appendChild(row);
         });
-
       } catch (err) {
         document.getElementById('loader').style.display = 'none';
-        alert('Inspection Alert: ' + err.message);
+        alert('Crawl error: ' + err.message);
+      }
+    }
+
+    // 2. DOMAIN SITEMAP AUDIT EXECUTION
+    async function runDomainAudit(rootUrl) {
+      const domainClean = rootUrl.replace(/\/$/, '');
+      const sitemapCandidates = [
+        `${domainClean}/sitemap.xml`,
+        `${domainClean}/wp-sitemap.xml`,
+        `${domainClean}/post-sitemap.xml`
+      ];
+
+      const loader = document.getElementById('loader');
+      const progContainer = document.getElementById('progContainer');
+      const progBar = document.getElementById('progBar');
+      const runBtn = document.getElementById('runBtn');
+
+      loader.style.display = 'block';
+      loader.innerText = 'Locating and reading sitemap.xml...';
+      progContainer.style.display = 'block';
+      progBar.style.width = '5%';
+      runBtn.disabled = true;
+      document.getElementById('domainResults').style.display = 'none';
+
+      let sitemapXml = '';
+      for (const smUrl of sitemapCandidates) {
+        try {
+          const candidate = await fetchViaProxy(smUrl);
+          if (candidate && candidate.includes('<urlset') || candidate.includes('<sitemapindex')) {
+            sitemapXml = candidate;
+            break;
+          }
+        } catch (_) {}
+      }
+
+      if (!sitemapXml) {
+        loader.style.display = 'none';
+        progContainer.style.display = 'none';
+        runBtn.disabled = false;
+        return alert('Could not find sitemap.xml or wp-sitemap.xml at domain root.');
+      }
+
+      if (sitemapXml.includes('<sitemapindex')) {
+        const subMatch = sitemapXml.match(/<loc>(.*?post-sitemap\.xml.*?)<\/loc>/i) || sitemapXml.match(/<loc>(.*?sitemap.*?\.xml)<\/loc>/i);
+        if (subMatch && subMatch[1]) {
+          try {
+            sitemapXml = await fetchViaProxy(subMatch[1]);
+          } catch (_) {}
+        }
+      }
+
+      const urls = [];
+      const regex = /<loc>(https?:\/\/[^<]+)<\/loc>/g;
+      let match;
+      while ((match = regex.exec(sitemapXml)) !== null) {
+        const u = match[1].trim();
+        if (!u.endsWith('.xml') && !u.match(/\/(category|tag|author|page)\//) && u !== domainClean && u !== domainClean + '/') {
+          urls.push(u);
+        }
+      }
+
+      const auditQueue = urls.slice(0, 12);
+      if (auditQueue.length === 0) {
+        loader.style.display = 'none';
+        progContainer.style.display = 'none';
+        runBtn.disabled = false;
+        return alert('No post URLs found in the sitemap.');
+      }
+
+      const tableBody = document.getElementById('domainTableBody');
+      tableBody.innerHTML = '';
+      let totalScore = 0;
+      let completed = 0;
+
+      for (const postUrl of auditQueue) {
+        loader.innerText = `Crawling and scoring (${completed + 1}/${auditQueue.length}): ${postUrl.split('/').filter(Boolean).pop()}...`;
+        try {
+          const html = await fetchViaProxy(postUrl);
+          const res = evaluateHtml(html, postUrl);
+          totalScore += res.score;
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><a href="${postUrl}" target="_blank" class="truncate" style="color:var(--adsense-blue); text-decoration:none;">${postUrl}</a></td>
+            <td>${res.wordCount}</td>
+            <td>${res.textRatio}%</td>
+            <td>${res.hasSchema ? 'Yes' : 'No'}</td>
+            <td><strong>${res.score}%</strong></td>
+            <td><span class="pill ${res.score >= 80 ? 'pass' : 'fail'}">${res.score >= 80 ? 'PASS' : 'RISK'}</span></td>
+          `;
+          tableBody.appendChild(tr);
+        } catch (e) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><span class="truncate" style="color:#666;">${postUrl}</span></td>
+            <td colspan="4" style="color:var(--google-red);">Failed to crawl</td>
+            <td><span class="pill fail">ERROR</span></td>
+          `;
+          tableBody.appendChild(tr);
+        }
+
+        completed++;
+        progBar.style.width = Math.round((completed / auditQueue.length) * 100) + '%';
+      }
+
+      loader.style.display = 'none';
+      progContainer.style.display = 'none';
+      runBtn.disabled = false;
+      document.getElementById('domainResults').style.display = 'block';
+
+      const avgScore = Math.round(totalScore / auditQueue.length);
+      const circle = document.getElementById('domainScoreCircle');
+      const verdict = document.getElementById('domainVerdict');
+      circle.innerText = avgScore + '%';
+      document.getElementById('domainMeta').innerText = `Batch Size: ${auditQueue.length} articles analyzed across ${domainClean}`;
+
+      if (avgScore >= 80) {
+        circle.style.background = 'var(--google-green-light)';
+        circle.style.color = 'var(--google-green)';
+        verdict.innerText = 'PORTFOLIO READY: Whole Domain Qualifies for AdSense';
+        verdict.style.color = 'var(--google-green)';
+      } else {
+        circle.style.background = 'var(--google-red-light)';
+        circle.style.color = 'var(--google-red)';
+        verdict.innerText = 'PORTFOLIO AT RISK: Optimize flagged pages below';
+        verdict.style.color = 'var(--google-red)';
       }
     }
   </script>
